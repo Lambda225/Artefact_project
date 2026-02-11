@@ -13,6 +13,7 @@ SELECT
     fs.sale_date,
     fsi.quantity,
     fsi.discount_percent,
+    fs.total_amount,
 
     -- Valeurs calculées (PAS stockées en DKNF)
     CASE WHEN fsi.discount_percent > 0 THEN 1 ELSE 0 END AS discounted,

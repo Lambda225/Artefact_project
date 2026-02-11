@@ -308,16 +308,17 @@ def upsert_dim_product(cur, schema: str, rows: Sequence[Tuple]):
 def upsert_fact_sale(cur, schema: str, rows: Sequence[Tuple]):
     """
     fact_sale: (sale_id PK)
-    Columns: sale_id, sale_date, customer_id, campaign_id
+    Columns: sale_id, sale_date, total_amount, customer_id, campaign_id
     """
     if not rows:
         return
     qtable = qualify(schema, "fact_sale")
     sql = f"""
-        INSERT INTO {qtable} (sale_id, sale_date, customer_id, campaign_id)
+        INSERT INTO {qtable} (sale_id, sale_date,total_amount, customer_id, campaign_id)
         VALUES %s
         ON CONFLICT (sale_id) DO UPDATE SET
           sale_date   = EXCLUDED.sale_date,
+          total_amount = EXCLUDED.total_amount,
           customer_id = EXCLUDED.customer_id,
           campaign_id = EXCLUDED.campaign_id
     """
@@ -444,8 +445,8 @@ def main():
 
             # 3.5 fact_sale (PK sale_id)
             sale_rows = []
-            for r in df[["sale_id", "sale_date", "customer_id", "channel", "channel_campaigns"]].drop_duplicates(subset=["sale_id"]).itertuples(index=False):
-                sale_id, sale_date_dt, customer_id, channel, campaign = r
+            for r in df[["sale_id", "sale_date","total_amount", "customer_id", "channel", "channel_campaigns"]].drop_duplicates(subset=["sale_id"]).itertuples(index=False):
+                sale_id, sale_date_dt, total_amount, customer_id, channel, campaign = r
                 if pd.isna(sale_id) or pd.isna(customer_id):
                     continue
                 camp_id = campaign_map.get((str(channel), str(campaign)))
@@ -454,6 +455,7 @@ def main():
                 sale_rows.append((
                     int(sale_id),
                     sale_date_dt,
+                    float(total_amount),
                     int(customer_id),
                     int(camp_id)
                 ))

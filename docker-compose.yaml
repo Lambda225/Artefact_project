@@ -324,7 +324,7 @@ services:
             }'
 
           echo "✓ MinIO connection created"
-        fin
+        fi
 
         echo "Setting MINIO_BUCKET variable..."
         if /entrypoint airflow variables get MINIO_BUCKET >/dev/null 2>&1; then

@@ -218,10 +218,11 @@ def upsert_fact_sale(cur, schema: str, rows: List[Tuple]):
     execute_values(
         cur,
         f"""
-        INSERT INTO {q(schema, "fact_sale")} (sale_id, sale_date, customer_id, campaign_id)
+        INSERT INTO {q(schema, "fact_sale")} (sale_id, sale_date,total_amount, customer_id, campaign_id)
         VALUES %s
         ON CONFLICT (sale_id) DO UPDATE SET
           sale_date   = EXCLUDED.sale_date,
+          total_amount = EXCLUDED.total_amount,
           customer_id = EXCLUDED.customer_id,
           campaign_id = EXCLUDED.campaign_id
         """,
@@ -371,14 +372,14 @@ def build_dag():
 
                 # fact_sale
                 sale_rows: List[Tuple] = []
-                for r in df[["sale_id", "sale_date", "customer_id", "channel", "channel_campaigns"]].drop_duplicates(subset=["sale_id"]).itertuples(index=False):
-                    sale_id, sale_date_dt, customer_id, channel, campaign = r
+                for r in df[["sale_id", "sale_date","total_amount","customer_id", "channel", "channel_campaigns"]].drop_duplicates(subset=["sale_id"]).itertuples(index=False):
+                    sale_id, sale_date_dt, total_amount, customer_id, channel, campaign = r
                     if pd.isna(sale_id) or pd.isna(customer_id):
                         continue
                     camp_id = campaign_map.get((str(channel), str(campaign)))
                     if camp_id is None:
                         raise AirflowFailException(f"Missing campaign_id mapping for channel={channel} campaign={campaign}")
-                    sale_rows.append((int(sale_id), sale_date_dt, int(customer_id), int(camp_id)))
+                    sale_rows.append((int(sale_id), sale_date_dt, float(total_amount), int(customer_id), int(camp_id)))
                 upsert_fact_sale(cur, schema, sale_rows)
 
                 # fact_sale_item

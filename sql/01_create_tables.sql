@@ -75,6 +75,7 @@ CREATE TABLE dim_product (
 CREATE TABLE fact_sale (
     sale_id INT PRIMARY KEY,
     sale_date DATE NOT NULL,
+    total_amount NUMERIC(10,2) NOT NULL CHECK (total_amount >= 0),
     customer_id INT NOT NULL REFERENCES dim_customer(customer_id),
     campaign_id INT NOT NULL REFERENCES dim_campaign(campaign_id)
 );

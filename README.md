@@ -158,11 +158,19 @@ PG_USER=airflow
 PG_PASSWORD=airflow
 ```
 
+**Recommander:** créer un environnement virtuelle python avant d'installer les dependants pour le lancement du script :
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Exemple d’exécution
 
 ```bash
 python ingestion/main.py 20250616
 ```
+
+**NB:** Assurer vous d'avoir tous les containers docker qui tourne bien avant le lancement du script
 
 ## ✅ Points clés techniques
 
