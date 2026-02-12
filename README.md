@@ -63,8 +63,9 @@ Exploitation BI / Analytics
 ├── 📁sql/
 │ ├── 📄01_create_tables.sql
 │ └── 📄02_view_sales_star.sql
-├── 📄analysis.ipynb
+├── 📄Analyse Exploratoire des Données.pdf
 ├── 📄docker-compose.yaml
+├── 📄requirements.txt
 └── 📄README.md
 ```
 
@@ -79,7 +80,7 @@ Une analyse exploratoire a été réalisée afin de :
 - détecter les redondances et anomalies
 - préparer la phase de modélisation
 
-📄 Livrable : `analysis.ipynb`
+📄 Livrable : `Analyse Exploratoire des Données.pdf`
 
 ---
 
